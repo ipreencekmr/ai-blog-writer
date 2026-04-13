@@ -1,0 +1,50 @@
+name: Generate Blog
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Optional topic to use for the blog post'
+        required: false
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run blog generation
+        run: |
+          if [ -n "${{ github.event.inputs.topic }}" ]; then
+            echo "Using provided topic: ${{ github.event.inputs.topic }}"
+            python src/main.py --topic "${{ github.event.inputs.topic }}"
+          else
+            echo "Finding a new topic"
+            python src/main.py
+          fi
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+
+      - name: Commit updated topics
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add used_topics.json
+          git commit -m "Update used topics after blog generation" || echo "No changes to commit"
+          git push

@@ -12,12 +12,26 @@ This project uses Crew AI to automate daily blog writing on tech industry topics
 
 ## Setup
 
-1. Ensure Python 3.11 or 3.12 is installed (Python 3.14 may have compatibility issues with some dependencies requiring C compiler; if using 3.14, install Microsoft Visual Studio Build Tools with C++ support).
-2. Create virtual environment: `python -m venv venv`
-3. Activate: `venv\Scripts\activate` (Windows) or `source venv/bin/activate` (Linux/Mac)
+1. Ensure Python 3.10 is installed. Download from [python.org](https://www.python.org/downloads/) if needed.
+
+2. Create a virtual environment: `python -m venv venv`
+
+3. Activate the virtual environment:
+   - Windows: `venv\Scripts\activate`
+   - Linux/Mac: `source venv/bin/activate`
+
 4. Install dependencies: `pip install -r requirements.txt`
-5. Set up environment variables in `.env` file (copy from `.env.example`)
-6. Run the application: `python src/main.py`
+
+5. Set up environment variables: Copy `.env.example` to `.env` and fill in your API keys (OpenAI, Serper, SendGrid, email addresses).
+
+6. Run the application once for testing: `python src/main.py`
+
+## Daily Automation
+
+To run the blog generation daily:
+
+- **Locally**: Uncomment the scheduling code in `src/main.py` and run `python src/main.py` (it will run daily at 9 AM).
+- **Via GitHub Actions**: Use the provided workflow in `.github/workflows/generate-blog.yml` (set up secrets in repository settings).
 
 ## Environment Variables
 
