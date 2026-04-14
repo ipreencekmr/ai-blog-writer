@@ -10,6 +10,7 @@ class TopicFinderAgent:
             backstory='You are an expert in tech trends, constantly monitoring industry news, social media, and emerging technologies to find compelling topics that resonate with readers.',
             verbose=True,
             allow_delegation=False,
+            llm="gpt-4o",
             tools=[SerperDevTool(api_key=os.getenv('SERPER_API_KEY'))]
         )
 

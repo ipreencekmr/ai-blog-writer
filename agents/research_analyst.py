@@ -10,6 +10,7 @@ class ResearchAnalystAgent:
             backstory='You are a meticulous researcher with access to web search tools, skilled in compiling comprehensive data, examples, and insights on tech topics.',
             verbose=True,
             allow_delegation=False,
+            llm="gpt-4o",
             tools=[SerperDevTool(api_key=os.getenv('SERPER_API_KEY'))]
         )
 

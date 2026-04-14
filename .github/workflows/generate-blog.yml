@@ -7,6 +7,10 @@ on:
         description: 'Optional topic to use for the blog post'
         required: false
         type: string
+      to_email:
+        description: 'Optional email address to send the blog post to'
+        required: false
+        type: string
 
 jobs:
   generate:
@@ -27,13 +31,15 @@ jobs:
 
       - name: Run blog generation
         run: |
+          CMD="python src/main.py"
           if [ -n "${{ github.event.inputs.topic }}" ]; then
-            echo "Using provided topic: ${{ github.event.inputs.topic }}"
-            python src/main.py --topic "${{ github.event.inputs.topic }}"
-          else
-            echo "Finding a new topic"
-            python src/main.py
+            CMD="$CMD --topic \"${{ github.event.inputs.topic }}\""
           fi
+          if [ -n "${{ github.event.inputs.to_email }}" ]; then
+            CMD="$CMD --to_email \"${{ github.event.inputs.to_email }}\""
+          fi
+          echo "Running: $CMD"
+          eval $CMD
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}

@@ -1,6 +1,7 @@
 crewai
 crewai-tools
 openai
+langchain-openai
 python-dotenv
 sendgrid
 schedule

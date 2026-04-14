@@ -9,6 +9,7 @@ class EmailAgent:
             backstory='You are responsible for delivering the final blog post to the user via email, ensuring it reaches the intended recipient securely.',
             verbose=True,
             allow_delegation=False,
+            llm="gpt-4o-mini",
             tools=[send_email_tool]
         )
 
