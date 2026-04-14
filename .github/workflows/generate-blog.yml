@@ -47,10 +47,10 @@ jobs:
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
 
-      - name: Commit updated topics
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add used_topics.json
-          git commit -m "Update used topics after blog generation" || echo "No changes to commit"
-          git push
+      - name: Upload blog post as artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-blog-post
+          path: output/*.md
+          retention-days: 30
