@@ -46,11 +46,3 @@ jobs:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-
-      - name: Upload blog post as artifact
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: generated-blog-post
-          path: output/*.md
-          retention-days: 30
