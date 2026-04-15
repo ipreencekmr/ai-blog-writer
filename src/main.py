@@ -4,33 +4,34 @@ import argparse
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from dotenv import load_dotenv
 from crewai import Crew
-from agents.topic_finder import TopicFinderAgent
-from agents.research_analyst import ResearchAnalystAgent
-from agents.evaluator import EvaluatorAgent
-from agents.formatter import FormatterAgent
-from agents.email_agent import EmailAgent
-from src.tasks import create_tasks
+from config.agent_factory import AgentFactory
+from config.task_factory import TaskFactory
+from utils.utils import write_blog
 import schedule
 import time
 
 load_dotenv()
 
 def run_blog_creation(topic=None, topic_provided=False):
-    # Initialize agents
-    topic_agent = TopicFinderAgent().get_agent()
-    research_agent = ResearchAnalystAgent().get_agent()
-    evaluator_agent = EvaluatorAgent().get_agent()
-    formatter_agent = FormatterAgent().get_agent()
-    email_agent = EmailAgent().get_agent()
-
-    # Create tasks
-    tasks = create_tasks(topic_agent, research_agent, evaluator_agent, formatter_agent, email_agent, topic_provided, topic)
-
-    # Create and run crew
-    agents = [research_agent, evaluator_agent, formatter_agent, email_agent]
-    if not topic_provided:
-        agents.insert(0, topic_agent)
+    # Initialize agent factory and create all agents
+    agent_factory = AgentFactory()
+    agents_dict = agent_factory.create_all_agents()
     
+    # Determine which task sequence to use
+    sequence_name = 'with_topic_provided' if topic_provided else 'with_topic_generation'
+    
+    # Initialize task factory and create tasks
+    task_factory = TaskFactory(agents_dict)
+    tasks = task_factory.create_tasks_for_sequence(sequence_name)
+    
+    # Get agents list for crew
+    agent_order = ['topic_finder', 'research_analyst', 'evaluator', 'formatter', 'email_sender']
+    if topic_provided:
+        agent_order = agent_order[1:]  # Remove topic_finder if topic is provided
+    
+    agents = [agents_dict[agent_name] for agent_name in agent_order]
+    
+    # Create and run crew
     crew = Crew(
         agents=agents,
         tasks=tasks,
@@ -39,6 +40,9 @@ def run_blog_creation(topic=None, topic_provided=False):
 
     result = crew.kickoff()
     print("Blog creation completed:", result)
+    
+    # ✅ Save blog from formatter task
+    write_blog(tasks)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="AI Blog Writer")

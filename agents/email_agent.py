@@ -1,17 +1,13 @@
-from crewai import Agent
-from tools.email_tool import send_email_tool
+"""
+Deprecated: This agent is now loaded from config/agents.yml
+Use AgentFactory from config.agent_factory instead.
+"""
+from config.agent_factory import AgentFactory
 
 class EmailAgent:
     def __init__(self):
-        self.agent = Agent(
-            role='Email Sender',
-            goal='Send the formatted blog post as a document attachment via email.',
-            backstory='You are responsible for delivering the final blog post to the user via email, ensuring it reaches the intended recipient securely.',
-            verbose=True,
-            allow_delegation=False,
-            llm="gpt-4o-mini",
-            tools=[send_email_tool]
-        )
+        factory = AgentFactory()
+        self.agent = factory.create_agent('email_sender')
 
     def get_agent(self):
         return self.agent

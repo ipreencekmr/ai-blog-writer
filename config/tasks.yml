@@ -1,0 +1,54 @@
+tasks:
+  find_topic:
+    description: "Identify a trending and engaging topic in the tech industry suitable for a blog post."
+    agent: "topic_finder"
+    expected_output: "A concise topic title for the blog post."
+    context: []
+    required_when: "topic_not_provided"
+
+  research:
+    description: "Conduct thorough up-to-date research on the selected topic, gathering facts, examples, and relevant information from reliable sources."
+    agent: "research_analyst"
+    expected_output: "A detailed research summary with facts, examples, and citations."
+    context:
+      - "find_topic"  # Depends on find_topic if topic_not_provided
+    condition: "topic_provided or previous_task_completed"
+
+  evaluate:
+    description: "Evaluate the researched content for accuracy, reliability, and completeness by cross-checking with multiple sources."
+    agent: "evaluator"
+    expected_output: "Validated content with confirmed facts and any corrections or additions."
+    context:
+      - "research"
+
+  format:
+    description: "Format the validated content into a comprehensive Medium-style blog post. Structure the post with the following sections: Introduction (hook and overview), Background (historical context and evolution), Why It Is Needed (problem it solves and benefits), Analogy (simple explanation using a relatable analogy), Examples (basic code snippets and configurations), Real-World Use Cases (industry applications with examples), Pros and Cons (balanced analysis), Alternatives (comparison with other tools/solutions), Best Practices (from basic to advanced usage guidelines), and Conclusion (summary, final thoughts, closing statement, and future outlook). Include citations throughout and ensure the content covers basic to advanced usage. Make it engaging, informative, and suitable for a technical audience."
+    agent: "formatter"
+    expected_output: "A fully formatted blog post in Markdown format, ready for publication, with all specified sections and examples."
+    context:
+      - "evaluate"
+
+  send_email:
+    description: "Send the formatted blog post as an email attachment to the specified recipient."
+    agent: "email_sender"
+    expected_output: "Confirmation that the email has been sent successfully."
+    context:
+      - "format"
+
+task_sequences:
+  with_topic_generation:
+    description: "Full workflow with automatic topic generation"
+    tasks:
+      - "find_topic"
+      - "research"
+      - "evaluate"
+      - "format"
+      - "send_email"
+
+  with_topic_provided:
+    description: "Workflow when topic is provided upfront"
+    tasks:
+      - "research"
+      - "evaluate"
+      - "format"
+      - "send_email"

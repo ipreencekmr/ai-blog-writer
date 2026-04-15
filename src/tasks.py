@@ -17,7 +17,7 @@ def create_tasks(topic_agent, research_agent, evaluator_agent, formatter_agent, 
     research_task = Task(
         description=research_description,
         agent=research_agent,
-        expected_output="A detailed research summary with facts, examples, and citations.",
+        expected_output="A detailed research summary with updated facts, examples, and citations.",
         context=research_context
     )
 
