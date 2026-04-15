@@ -1,15 +1,15 @@
 tasks:
   find_topic:
-    description: "Identify a trending and engaging topic in the tech industry suitable for a blog post."
+    description: "Identify a trending and engaging topic in the tech industry suitable for a blog post. Focus on current trends. Avoid outdated topics from previous years. Make sure the topic is fresh, relevant, and timely."
     agent: "topic_finder"
-    expected_output: "A concise topic title for the blog post."
+    expected_output: "A concise, current topic title for the blog post that reflects current trends."
     context: []
     required_when: "topic_not_provided"
 
   research:
-    description: "Conduct thorough up-to-date research on the selected topic, gathering facts, examples, and relevant information from reliable sources."
+    description: "Conduct thorough up-to-date research on the selected topic, gathering the most recent facts, examples, and relevant information from reliable sources. Find latest developments and current information."
     agent: "research_analyst"
-    expected_output: "A detailed research summary with facts, examples, and citations."
+    expected_output: "A detailed research summary with recent facts, examples, and citations from current sources."
     context:
       - "find_topic"  # Depends on find_topic if topic_not_provided
     condition: "topic_provided or previous_task_completed"
@@ -22,9 +22,9 @@ tasks:
       - "research"
 
   format:
-    description: "Format the validated content into a comprehensive Medium-style blog post. Structure the post with the following sections: Introduction (hook and overview), Background (historical context and evolution), Why It Is Needed (problem it solves and benefits), Analogy (simple explanation using a relatable analogy), Examples (basic code snippets and configurations), Real-World Use Cases (industry applications with examples), Pros and Cons (balanced analysis), Alternatives (comparison with other tools/solutions), Best Practices (from basic to advanced usage guidelines), and Conclusion (summary, final thoughts, closing statement, and future outlook). Include citations throughout and ensure the content covers basic to advanced usage. Make it engaging, informative, and suitable for a technical audience."
+    description: "Format the validated content into a comprehensive Medium-style blog post. Structure the post with the following sections: Introduction (hook and overview), Background (historical context and evolution), Why It Is Needed (problem it solves and benefits), Analogy (simple explanation using a relatable analogy), Examples (practical descriptions and explanations), Real-World Use Cases (industry applications with examples), Pros and Cons (balanced analysis), Alternatives (comparison with other tools/solutions), Best Practices (from basic to advanced usage guidelines), and Conclusion (summary, final thoughts, closing statement, and future outlook). Include citations throughout and ensure the content covers basic to advanced usage. Use Medium blog formatting including bold, italics, headers, and proper section breaks for readability and engagement. DO NOT use markdown code blocks (triple backticks). Instead, describe code concepts and examples in natural language with proper emphasis and formatting. Make it engaging, informative, and suitable for a technical audience."
     agent: "formatter"
-    expected_output: "A fully formatted blog post in Markdown format, ready for publication, with all specified sections and examples."
+    expected_output: "A fully formatted blog post in Medium style, ready for publication, with all specified sections, proper formatting like bold and italics, section headers, and examples explained without markdown code blocks."
     context:
       - "evaluate"
 

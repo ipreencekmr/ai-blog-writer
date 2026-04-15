@@ -1,6 +1,7 @@
 import os
 import sys
 import argparse
+from datetime import datetime
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from dotenv import load_dotenv
 from crewai import Crew
@@ -20,9 +21,13 @@ def run_blog_creation(topic=None, topic_provided=False):
     # Determine which task sequence to use
     sequence_name = 'with_topic_provided' if topic_provided else 'with_topic_generation'
     
+    # Get current date and year
+    current_date = datetime.now().strftime('%B %d, %Y')
+    current_year = datetime.now().year
+    
     # Initialize task factory and create tasks
     task_factory = TaskFactory(agents_dict)
-    tasks = task_factory.create_tasks_for_sequence(sequence_name)
+    tasks = task_factory.create_tasks_for_sequence(sequence_name, topic=topic, current_date=current_date, current_year=current_year)
     
     # Get agents list for crew
     agent_order = ['topic_finder', 'research_analyst', 'evaluator', 'formatter', 'email_sender']
